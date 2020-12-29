@@ -1,3 +1,5 @@
+import { element } from "prop-types";
+
 export default class slide{
   constructor(slide, wrapper){
     this.slide =  document.querySelector(slide);
@@ -55,6 +57,38 @@ export default class slide{
     this.onStart = this.onStart.bind(this);
     this.onMove = this.onMove.bind(this);
     this.onEnd = this.onEnd.bind(this);
+  }
+
+  slidePosition(slide){
+    const margin = (this.wrapper.offsetWidth - slide.offsetWidth)/2;
+    return -(slide.offsetLeft- margin);
+  }
+
+  //slide config
+  slidesConfig(){
+    this.slideArray = [...this.slide.children].map((element)=>{
+      const position = this.slidePosition(element);
+      return{
+        position,
+        element
+      }
+    })
+  }
+
+  slideIndexNav(index){
+    const last = this.slideArray.length
+    this.index={
+      prev: index? index -1: undefined,
+      active: index,
+      next: index === last ? undefined : index +1,
+    }
+  }
+
+  changeSlide(index){
+    const activeSlide = this.slideArray[index]
+    this.moveSlide(activeSlide.position);
+    this.slideIndexNav(index);
+    this.dist.finalPosition = activeSlide.position;
   }
 
   init(){
